@@ -1,0 +1,2 @@
+const root=document.querySelector('#projects');
+root.innerHTML=PROJECTS.sort((a,b)=>b.year.localeCompare(a.year)).map((p,i)=>`<article class="project ${i===0?'lead':''}"><a href="project.html?id=${i}"><div class="project-image"><img src="${p.cover}" alt="${p.title}" loading="${i<2?'eager':'lazy'}"><span>VIEW PROJECT ↗</span></div><div class="project-meta"><div><p>${p.date} · ${p.type}</p><h3>${p.title}</h3><span>${p.sub}</span></div><b>${String(i+1).padStart(2,'0')}</b></div></a></article>`).join('');
