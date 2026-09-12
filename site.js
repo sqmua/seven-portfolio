@@ -28,6 +28,9 @@ function observeReveals(){
 }
 observeReveals();
 
+const marquee=document.querySelector('.marquee');
+if(marquee){const control=marquee.querySelector('button');control.addEventListener('click',()=>{const paused=marquee.classList.toggle('paused');control.setAttribute('aria-pressed',String(paused));control.setAttribute('aria-label',paused?'继续滚动文字':'暂停滚动文字');control.textContent=paused?'▶':'Ⅱ'})}
+
 const contact=document.createElement('div');
 contact.className='contact-drawer';
 contact.innerHTML=`<div class="contact-backdrop" data-close-contact></div><section role="dialog" aria-modal="true" aria-label="联系方式"><button class="contact-close" data-close-contact aria-label="关闭">×</button><p>CONTACT / 联系</p><h2>如果项目合适，<br>我们可以聊聊。</h2><div class="contact-row"><span>EMAIL</span><b>1259198644@qq.com</b><button data-copy="1259198644@qq.com">复制</button></div><div class="contact-row"><span>WECHAT</span><b>sanqi520680</b><button data-copy="sanqi520680">复制</button></div><a href="mailto:1259198644@qq.com" data-direct-mail>发送邮件 ↗</a><small>视觉设计 · 活动执行 · 广州</small></section>`;
