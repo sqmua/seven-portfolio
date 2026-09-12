@@ -13,4 +13,4 @@ document.querySelector('#detail').innerHTML=`
 <section id="gallery" class="gallery-section"><div class="gallery-head"><p class="section-label">04 / VISUAL OUTPUT</p><h2>视觉展示</h2><span>${p.images.length} 张项目画面</span></div><div class="case-gallery editorial">${p.images.map((src,i)=>`<figure class="frame-${i%6}"><img src="${src}" alt="${p.title} 项目画面 ${i+1}" ${i?'loading="lazy"':''}><figcaption><span>${String(i+1).padStart(2,'0')}</span><b>${d.deliverables[i%d.deliverables.length]}</b></figcaption></figure>`).join('')}</div>${index===4?'<p class="credit-note">项目说明：平面视觉部分由本人独立完成，3D建模部分由团队同事协助完成。</p>':''}</section>
 <section id="review" class="review-section"><p class="section-label">05 / REVIEW</p><h2>项目复盘</h2><p>${d.reflection}</p></section>
 <a class="next-project" href="project.html?id=${(index+1)%PROJECTS.length}"><span>下一个项目</span><div><b>${next.title}</b><i>→</i></div></a>`;
-</script><script src="site.js?v=20260912-1"></script></body></html>
+</script><script src="site.js?v=20260913-1"></script></body></html>

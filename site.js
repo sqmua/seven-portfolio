@@ -31,6 +31,17 @@ observeReveals();
 const marquee=document.querySelector('.marquee');
 if(marquee){const control=marquee.querySelector('button');control.addEventListener('click',()=>{const paused=marquee.classList.toggle('paused');control.setAttribute('aria-pressed',String(paused));control.setAttribute('aria-label',paused?'继续滚动文字':'暂停滚动文字');control.textContent=paused?'▶':'Ⅱ'})}
 
+const archiveGrid=document.querySelector('#archive-grid');
+if(archiveGrid){
+  const renderArchive=filter=>{
+    const images=ARCHIVE_IMAGES.filter(src=>filter==='all'||(filter==='2024'?src.includes('2024-page'):!src.includes('2024-page')));
+    archiveGrid.classList.add('switching');
+    setTimeout(()=>{archiveGrid.innerHTML=images.map((src,i)=>{const set=src.includes('2024-page')?'2024 作品集':'2026 作品集',page=(src.match(/(?:page-)(\d+)/)||[])[1]||i+1;return `<figure class="archive-item reveal"><img src="${src}" alt="${set}第 ${Number(page)} 页项目画面" loading="lazy"><figcaption><span>${set}</span><b>PAGE ${String(page).padStart(2,'0')}</b></figcaption></figure>`}).join('');document.querySelector('#archive-count').textContent=images.length;archiveGrid.classList.remove('switching');observeReveals();bindLightboxes(archiveGrid)},180)
+  };
+  renderArchive('all');
+  document.querySelectorAll('[data-archive]').forEach(button=>button.addEventListener('click',()=>{document.querySelector('[data-archive].active')?.classList.remove('active');button.classList.add('active');renderArchive(button.dataset.archive)}));
+}
+
 const contact=document.createElement('div');
 contact.className='contact-drawer';
 contact.innerHTML=`<div class="contact-backdrop" data-close-contact></div><section role="dialog" aria-modal="true" aria-label="联系方式"><button class="contact-close" data-close-contact aria-label="关闭">×</button><p>CONTACT / 联系</p><h2>如果项目合适，<br>我们可以聊聊。</h2><div class="contact-row"><span>EMAIL</span><b>1259198644@qq.com</b><button data-copy="1259198644@qq.com">复制</button></div><div class="contact-row"><span>WECHAT</span><b>Zenglx7</b><button data-copy="Zenglx7">复制</button></div><a href="mailto:1259198644@qq.com" data-direct-mail>发送邮件 ↗</a><small>视觉设计 · 活动执行 · 广州</small></section>`;
@@ -40,4 +51,5 @@ contact.querySelectorAll('[data-close-contact]').forEach(x=>x.addEventListener('
 contact.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(btn.dataset.copy);btn.textContent='已复制'}catch{btn.textContent='请手动复制'}setTimeout(()=>btn.textContent='复制',1600)}));
 addEventListener('keydown',e=>{if(e.key==='Escape'){contact.classList.remove('open');document.body.classList.remove('no-scroll')}});
 
-document.querySelectorAll('.case-gallery img').forEach(img=>{img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','放大查看图片');const open=()=>{const box=document.createElement('div');box.className='lightbox';box.innerHTML=`<button aria-label="关闭">×</button><img src="${img.src}" alt="${img.alt}"><p>${img.alt}</p>`;document.body.append(box);requestAnimationFrame(()=>box.classList.add('open'));const close=()=>{box.classList.remove('open');setTimeout(()=>box.remove(),250)};box.addEventListener('click',e=>{if(e.target===box||e.target.tagName==='BUTTON')close()});addEventListener('keydown',e=>{if(e.key==='Escape')close()},{once:true})};img.addEventListener('click',open);img.addEventListener('keydown',e=>{if(e.key==='Enter')open()})});
+function bindLightboxes(root=document){root.querySelectorAll('.case-gallery img,.archive-grid img').forEach(img=>{if(img.dataset.lightboxBound)return;img.dataset.lightboxBound='1';img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','放大查看图片');const open=()=>{const box=document.createElement('div');box.className='lightbox';box.innerHTML=`<button aria-label="关闭">×</button><img src="${img.src}" alt="${img.alt}"><p>${img.alt}</p>`;document.body.append(box);requestAnimationFrame(()=>box.classList.add('open'));const close=()=>{box.classList.remove('open');setTimeout(()=>box.remove(),250)};box.addEventListener('click',e=>{if(e.target===box||e.target.tagName==='BUTTON')close()});addEventListener('keydown',e=>{if(e.key==='Escape')close()},{once:true})};img.addEventListener('click',open);img.addEventListener('keydown',e=>{if(e.key==='Enter')open()})})}
+bindLightboxes();
