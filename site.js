@@ -33,7 +33,7 @@ if(marquee){const control=marquee.querySelector('button');control.addEventListen
 
 const contact=document.createElement('div');
 contact.className='contact-drawer';
-contact.innerHTML=`<div class="contact-backdrop" data-close-contact></div><section role="dialog" aria-modal="true" aria-label="联系方式"><button class="contact-close" data-close-contact aria-label="关闭">×</button><p>CONTACT / 联系</p><h2>如果项目合适，<br>我们可以聊聊。</h2><div class="contact-row"><span>EMAIL</span><b>1259198644@qq.com</b><button data-copy="1259198644@qq.com">复制</button></div><div class="contact-row"><span>WECHAT</span><b>sanqi520680</b><button data-copy="sanqi520680">复制</button></div><a href="mailto:1259198644@qq.com" data-direct-mail>发送邮件 ↗</a><small>视觉设计 · 活动执行 · 广州</small></section>`;
+contact.innerHTML=`<div class="contact-backdrop" data-close-contact></div><section role="dialog" aria-modal="true" aria-label="联系方式"><button class="contact-close" data-close-contact aria-label="关闭">×</button><p>CONTACT / 联系</p><h2>如果项目合适，<br>我们可以聊聊。</h2><div class="contact-row"><span>EMAIL</span><b>1259198644@qq.com</b><button data-copy="1259198644@qq.com">复制</button></div><div class="contact-row"><span>WECHAT</span><b>Zenglx7</b><button data-copy="Zenglx7">复制</button></div><a href="mailto:1259198644@qq.com" data-direct-mail>发送邮件 ↗</a><small>视觉设计 · 活动执行 · 广州</small></section>`;
 document.body.append(contact);
 document.querySelectorAll('a[href^="mailto:"]:not([data-direct-mail])').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();contact.classList.add('open');document.body.classList.add('no-scroll')}));
 contact.querySelectorAll('[data-close-contact]').forEach(x=>x.addEventListener('click',()=>{contact.classList.remove('open');document.body.classList.remove('no-scroll')}));
