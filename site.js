@@ -33,11 +33,20 @@ if(marquee){const control=marquee.querySelector('button');control.addEventListen
 
 const archiveGrid=document.querySelector('#archive-grid');
 if(archiveGrid){
-  const renderArchive=filter=>{
-    const images=ARCHIVE_IMAGES.filter(src=>filter==='all'||(filter==='2024'?src.includes('2024-page'):!src.includes('2024-page')));
-    archiveGrid.classList.add('switching');
-    setTimeout(()=>{archiveGrid.innerHTML=images.map((src,i)=>{const set=src.includes('2024-page')?'2024 作品集':'2026 作品集',page=(src.match(/(?:page-)(\d+)/)||[])[1]||i+1;return `<figure class="archive-item reveal"><img src="${src}" alt="${set}第 ${Number(page)} 页项目画面" loading="lazy"><figcaption><span>${set}</span><b>PAGE ${String(page).padStart(2,'0')}</b></figcaption></figure>`}).join('');document.querySelector('#archive-count').textContent=images.length;archiveGrid.classList.remove('switching');observeReveals();bindLightboxes(archiveGrid)},180)
+  let archiveFilter='all', visibleCount=12;
+  const more=document.createElement('button');
+  more.className='archive-more';more.type='button';
+  archiveGrid.after(more);
+  const renderArchive=(filter,reset=true)=>{
+    if(reset){archiveFilter=filter;visibleCount=12}
+    const images=ARCHIVE_IMAGES.filter(src=>archiveFilter==='all'||(archiveFilter==='2024'?src.includes('2024-page'):!src.includes('2024-page')));
+    archiveGrid.innerHTML=images.slice(0,visibleCount).map((src,i)=>{const set=src.includes('2024-page')?'2024 作品集':'2026 作品集',page=(src.match(/(?:page-)(\d+)/)||[])[1]||i+1;return `<figure class="archive-item reveal"><img src="${src}" alt="${set}第 ${Number(page)} 页项目画面" loading="lazy"><figcaption><span>${set}</span><b>PAGE ${String(page).padStart(2,'0')}</b></figcaption></figure>`}).join('');
+    document.querySelector('#archive-count').textContent=images.length;
+    more.hidden=visibleCount>=images.length;
+    more.textContent=`继续浏览 · 已展示 ${Math.min(visibleCount,images.length)} / ${images.length}`;
+    observeReveals();bindLightboxes(archiveGrid);
   };
+  more.addEventListener('click',()=>{const firstNew=visibleCount;visibleCount+=12;renderArchive(archiveFilter,false);const next=archiveGrid.children[firstNew]?.querySelector('img');next?.focus({preventScroll:true})});
   renderArchive('all');
   document.querySelectorAll('[data-archive]').forEach(button=>button.addEventListener('click',()=>{document.querySelector('[data-archive].active')?.classList.remove('active');button.classList.add('active');renderArchive(button.dataset.archive)}));
 }
@@ -51,5 +60,32 @@ contact.querySelectorAll('[data-close-contact]').forEach(x=>x.addEventListener('
 contact.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(btn.dataset.copy);btn.textContent='已复制'}catch{btn.textContent='请手动复制'}setTimeout(()=>btn.textContent='复制',1600)}));
 addEventListener('keydown',e=>{if(e.key==='Escape'){contact.classList.remove('open');document.body.classList.remove('no-scroll')}});
 
-function bindLightboxes(root=document){root.querySelectorAll('.case-gallery img,.archive-grid img').forEach(img=>{if(img.dataset.lightboxBound)return;img.dataset.lightboxBound='1';img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','放大查看图片');const open=()=>{const box=document.createElement('div');box.className='lightbox';box.innerHTML=`<button aria-label="关闭">×</button><img src="${img.src}" alt="${img.alt}"><p>${img.alt}</p>`;document.body.append(box);requestAnimationFrame(()=>box.classList.add('open'));const close=()=>{box.classList.remove('open');setTimeout(()=>box.remove(),250)};box.addEventListener('click',e=>{if(e.target===box||e.target.tagName==='BUTTON')close()});addEventListener('keydown',e=>{if(e.key==='Escape')close()},{once:true})};img.addEventListener('click',open);img.addEventListener('keydown',e=>{if(e.key==='Enter')open()})})}
+function bindLightboxes(root=document){
+  const images=[...root.querySelectorAll('.case-gallery img,.archive-grid img')];
+  images.forEach(img=>{
+    if(img.dataset.lightboxBound)return;
+    img.dataset.lightboxBound='1';img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label',`放大查看：${img.alt}`);
+    const open=()=>{
+      let index=images.indexOf(img);
+      const box=document.createElement('div');box.className='lightbox';box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');box.setAttribute('aria-label','作品图片浏览');
+      box.innerHTML='<button class="lightbox-close" aria-label="关闭图片浏览">×</button><button class="lightbox-prev" aria-label="上一张">←</button><img><button class="lightbox-next" aria-label="下一张">→</button><p aria-live="polite"></p>';
+      const show=()=>{const current=images[index];box.querySelector('img').src=current.src;box.querySelector('img').alt=current.alt;box.querySelector('p').textContent=`${index+1} / ${images.length} · ${current.alt}`};
+      const move=step=>{index=(index+step+images.length)%images.length;show()};
+      const wasLocked=document.body.classList.contains('no-scroll');
+      const close=()=>{document.removeEventListener('keydown',keys);box.remove();if(!wasLocked)document.body.classList.remove('no-scroll');img.focus({preventScroll:true})};
+      const keys=e=>{
+        if(e.key==='Escape'){e.preventDefault();close()}
+        if(e.key==='ArrowLeft'){e.preventDefault();move(-1)}
+        if(e.key==='ArrowRight'){e.preventDefault();move(1)}
+        if(e.key==='Tab'){const buttons=[...box.querySelectorAll('button')];const i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus()}
+      };
+      box.querySelector('.lightbox-close').onclick=close;
+      box.querySelector('.lightbox-prev').onclick=()=>move(-1);
+      box.querySelector('.lightbox-next').onclick=()=>move(1);
+      box.addEventListener('click',e=>{if(e.target===box)close()});
+      show();document.body.append(box);document.body.classList.add('no-scroll');requestAnimationFrame(()=>box.classList.add('open'));box.querySelector('button').focus();document.addEventListener('keydown',keys);
+    };
+    img.addEventListener('click',open);img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}});
+  });
+}
 bindLightboxes();
