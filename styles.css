@@ -53,3 +53,14 @@ body{background:var(--paper);background-image:none;color:var(--ink)}::selection{
 .project-visual img{transition:transform .8s cubic-bezier(.16,1,.3,1),filter .35s ease}.project-card a:hover .project-visual img{transform:scale(1.025);filter:saturate(1.06)}.project-card.reveal:nth-child(even){transition-delay:.06s}.case-gallery figure.reveal:nth-child(3n+2){transition-delay:.07s}.case-gallery figure.reveal:nth-child(3n+3){transition-delay:.14s}.section-title h2{text-wrap:balance}.content-section p,.job-body p,.job-body li{max-width:72ch}
 @media(max-width:850px){.archive-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:70px 18px}.archive-item,.archive-item:nth-child(n){grid-column:auto}.archive-toolbar{align-items:flex-start;flex-direction:column}.index-columns{gap:55px}}
 @media(max-width:560px){:root{--section-space:82px}.section-title{padding-bottom:28px}.section-title h2{font-size:2.55rem}.discipline-grid article{padding:28px;min-height:240px}.archive-grid{grid-template-columns:1fr;gap:58px}.archive-toolbar{padding-bottom:45px}.project-info .summary{font-size:1rem}.job{padding-top:70px;padding-bottom:70px}.two-copy{gap:35px}}
+
+/* Image browsing: preserve complete artwork and quiet the project captions. */
+.archive-item img{aspect-ratio:auto;object-fit:contain;height:auto}
+.project-info .summary{max-width:48ch;font-size:.92rem}
+.project-info li{border:0;background:transparent;padding:0;margin-right:12px}
+.archive-more{display:block;margin:64px auto 0;min-height:48px;padding:12px 26px;background:transparent;border:1px solid #777;border-radius:999px;color:#fff;font:inherit;cursor:pointer}
+.archive-more:hover{background:#fff;color:#111}.archive-more[hidden]{display:none}
+.lightbox{z-index:150}.lightbox>img{max-width:calc(100vw - 160px);max-height:82svh;object-fit:contain}.lightbox .lightbox-prev,.lightbox .lightbox-next{position:absolute;top:50%;right:auto;transform:translateY(-50%);background:#222;color:#fff;border:1px solid #777;border-radius:50%;cursor:pointer}.lightbox .lightbox-prev{left:20px}.lightbox .lightbox-next{right:20px}.lightbox .lightbox-close{position:absolute;right:20px;top:20px}.lightbox>p{max-width:80vw;text-align:center}
+a:focus-visible,button:focus-visible,img[role=button]:focus-visible{outline:3px solid #7da0ff;outline-offset:5px}
+@media(max-width:560px){.lightbox>img{max-width:96vw;max-height:74svh}.lightbox .lightbox-prev,.lightbox .lightbox-next{top:auto;bottom:15px;transform:none}.lightbox>p{padding:0 38px;font-size:.75rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.reveal,.archive-item.reveal{opacity:1;transform:none}body{opacity:1;transform:none}}
