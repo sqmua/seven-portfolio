@@ -89,3 +89,7 @@ function bindLightboxes(root=document){
   });
 }
 bindLightboxes();
+
+// Keep portfolio totals tied to the actual available archive.
+const homeArchiveCount=document.querySelector('.full-archive .section-title>p');
+if(homeArchiveCount)homeArchiveCount.textContent=`${ARCHIVE_IMAGES.length} 张作品页面，来自两版作品集。点击画面放大浏览。`;
